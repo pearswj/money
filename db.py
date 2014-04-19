@@ -52,7 +52,7 @@ def get_json():
         #TODO: package in JSON string and return
         cur = con.cursor()
         #cur.execute("")
-        cur.execute("SELECT * FROM Transactions")
+        cur.execute("SELECT * FROM transactions ORDER BY date")
         r = [dict((cur.description[i][0], value) \
             for i, value in enumerate(row)) for row in cur.fetchall()]
         return json.dumps(r)

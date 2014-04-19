@@ -4,7 +4,10 @@ import db
 
 class HelloWorld(object):
     def index(self):
-        return "Hello World!"
+        f = open('index.html', 'r')
+        d = f.read()
+        f.close()
+        return d
         
     index.exposed = True
     
