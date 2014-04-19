@@ -3,12 +3,13 @@
 import sqlite3
 import csv
 import time
+import json
+
+db_name = 'bank.db'
 
 def append(file):
     """Takes bank transactions from a csv file and adds them to the database.
     Ignores duplicates."""
-    
-    db_name = 'bank.db'
 
     con = sqlite3.connect(db_name)
 
@@ -40,4 +41,18 @@ def append(file):
                     
             print "Found: " + str(found)
             print "Added: " + str(found - failed) + " (" + str(failed) + " duplicates)"
+
+def get_json():
+    """Gets all the transactions as a JSON string."""
+
+    con = sqlite3.connect(db_name)
     
+    with con:
+        #TODO: print contents of database
+        #TODO: package in JSON string and return
+        cur = con.cursor()
+        #cur.execute("")
+        cur.execute("SELECT * FROM Transactions")
+        r = [dict((cur.description[i][0], value) \
+            for i, value in enumerate(row)) for row in cur.fetchall()]
+        return json.dumps(r)

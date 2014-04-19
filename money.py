@@ -4,7 +4,7 @@ import sys
 import argparse
 
 argparser = argparse.ArgumentParser(description='Analyse some bank statements.')
-argparser.add_argument('mode', choices=['parse','append','help'])
+argparser.add_argument('mode', choices=['parse','append','serve','help'])
 
 args = argparser.parse_args()
 
@@ -17,3 +17,6 @@ elif args.mode == 'parse':
 elif args.mode == 'append':
     import db
     db.append(sys.stdin)
+elif args.mode == 'serve':
+    import server
+    server.start()
