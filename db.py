@@ -42,17 +42,14 @@ def append(file):
             print "Found: " + str(found)
             print "Added: " + str(found - failed) + " (" + str(failed) + " duplicates)"
 
-def get_json():
+def get_json(query="SELECT * FROM transactions ORDER BY date"):
     """Gets all the transactions as a JSON string."""
 
     con = sqlite3.connect(db_name)
     
     with con:
-        #TODO: print contents of database
-        #TODO: package in JSON string and return
         cur = con.cursor()
-        #cur.execute("")
-        cur.execute("SELECT * FROM transactions ORDER BY date")
+        cur.execute(query)
         r = [dict((cur.description[i][0], value) \
             for i, value in enumerate(row)) for row in cur.fetchall()]
         return json.dumps(r)

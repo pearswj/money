@@ -12,7 +12,11 @@ class HelloWorld(object):
     index.exposed = True
     
     def transactions(self):
-        return db.get_json()
+        #query = "SELECT * FROM transactions \
+        #         WHERE description LIKE '%LUL%' \ 
+        #         ORDER BY date"
+        query = "SELECT * FROM transactions ORDER BY date"
+        return db.get_json(query)
         
     transactions.exposed = True
 
