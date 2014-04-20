@@ -23,6 +23,20 @@ body {
   stroke-width: 1.5px;
 }
 
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.focus circle {
+  fill: steelblue;
+  stroke: steelblue;
+}
+
+.focus .bold {
+  font-weight: bold;
+}
+
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.js"></script>
@@ -32,7 +46,11 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-var parseDate = d3.time.format("%Y-%m-%d").parse;
+var formatDate = d3.time.format("%Y-%m-%d"),
+    parseDate = formatDate.parse,
+    bisectDate = d3.bisector(function(d) { return d.date; }).left,
+    formatValue = d3.format(",.2f"),
+    formatCurrency = function(d) { return "£" + formatValue(d); };
 
 var x = d3.time.scale()
     .range([0, width]);
@@ -58,7 +76,7 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("http://localhost:8080/transactions", function(error, data) {
+d3.json("/transactions", function(error, data) {
   data.forEach(function(d) {
     d.date = parseDate(d.date);
     d.balance = +d.balance;
@@ -86,6 +104,37 @@ d3.json("http://localhost:8080/transactions", function(error, data) {
       .datum(data)
       .attr("class", "line")
       .attr("d", line);
+
+  var focus = svg.append("g")
+      .attr("class", "focus")
+      .style("display", "none");
+
+  focus.append("circle")
+      .attr("r", 3);
+
+  focus.append("text")
+      .attr("x", 9)
+      .attr("dy", ".35em");
+
+  svg.append("rect")
+      .attr("class", "overlay")
+      .attr("width", width)
+      .attr("height", height)
+      .on("mouseover", function() { focus.style("display", null); })
+      .on("mouseout", function() { focus.style("display", "none"); })
+      .on("mousemove", mousemove);
+
+  function mousemove() {
+    var x0 = x.invert(d3.mouse(this)[0]),
+        i = bisectDate(data, x0, 1),
+        d0 = data[i - 1],
+        d1 = data[i],
+        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+        focus.attr("transform", "translate(" + x(d.date) + "," + y(d.amount) + ")");
+        focus.select("text").text("")
+        focus.select("text").append("tspan").text(formatDate(d.date));
+        focus.select("text").append("tspan").attr("class", "bold").attr("x", 9).attr("dy", 15).text(formatCurrency(d.amount));
+  }
 });
 
 </script>
