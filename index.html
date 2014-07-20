@@ -42,7 +42,7 @@ body {
 <script src="http://d3js.org/d3.v3.js"></script>
 <script>
 
-var margin = {top: 20, right: 20, bottom: 30, left: 50},
+var margin = {top: 20, right: 75, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -130,10 +130,10 @@ d3.json("/transactions", function(error, data) {
         d0 = data[i - 1],
         d1 = data[i],
         d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-        focus.attr("transform", "translate(" + x(d.date) + "," + y(d.amount) + ")");
+        focus.attr("transform", "translate(" + x(d.date) + "," + y(d.balance) + ")");
         focus.select("text").text("")
         focus.select("text").append("tspan").text(formatDate(d.date));
-        focus.select("text").append("tspan").attr("class", "bold").attr("x", 9).attr("dy", 15).text(formatCurrency(d.amount));
+        focus.select("text").append("tspan").attr("class", "bold").attr("x", 9).attr("dy", 15).text(formatCurrency(d.balance));
   }
 });
 
