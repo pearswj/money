@@ -25,12 +25,14 @@ def tocsv(file):
             date = line.strip().split(SPLIT_CHR)[1]
         if line.startswith("Description"):
             desc = re.split(',[0-9]', line.strip().split(SPLIT_CHR)[1])[0]
+            desc = desc.encode('utf-8').replace('Â','').decode('utf-8')
         if line.startswith("Amount"):
             amou = line.strip().split(SPLIT_CHR)[1].encode('ascii', 'ignore')
         if line.startswith("Balance"):
             bala = line.strip().split(SPLIT_CHR)[1].encode('ascii', 'ignore')
         if (date and desc and amou and bala):
-            print '"%s","%s","%s","%s"' % (date, desc, amou, bala)
+            row = u'"{0}","{1}","{2}","{3}"'.format(date, desc, amou, bala)
+            print row
             date = None
             desc = None
             amou = None

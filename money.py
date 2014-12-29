@@ -3,6 +3,13 @@
 import sys
 import argparse
 
+from signal import signal, SIGPIPE, SIG_DFL
+signal(SIGPIPE,SIG_DFL)
+
+import codecs
+UTF8Writer = codecs.getwriter('utf8')
+sys.stdout = UTF8Writer(sys.stdout)
+
 argparser = argparse.ArgumentParser(description='Analyse some bank statements.')
 argparser.add_argument('mode', choices=['parse','append','serve','help'])
 
